@@ -84,7 +84,7 @@ func (m *Main) Update() {
 					if ni < 0 || ni >= len(m.board) || nj < 0 || nj >= len(row) {
 						break
 					}
-					m.count[ni][nj] += piece.value
+					m.count[ni][nj] += piece.value * reverse
 					if piece.single {
 						break
 					}
@@ -108,7 +108,7 @@ func (m *Main) Print() {
 			if (i+j)%2 == 0 {
 				fmt.Print(ColorReverse)
 			}
-			fmt.Printf("%d ", m.count[i][j])
+			fmt.Printf("%2d", m.count[i][j])
 			fmt.Print(ColorReset)
 		}
 		fmt.Println()
