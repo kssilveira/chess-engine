@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
 
 const (
 	ColorReset   = "\033[0m"
@@ -8,7 +12,7 @@ const (
 )
 
 type Main struct {
-	board   []string
+	board   [][]rune
 	count   [][]int
 	overall int
 }
@@ -91,15 +95,15 @@ var (
 )
 
 func New() *Main {
-	m := &Main{board: []string{
-		"rnbqkbnr",
-		"pppppppp",
-		"        ",
-		"        ",
-		"        ",
-		"        ",
-		"PPPPPPPP",
-		"RNBQKBNR",
+	m := &Main{board: [][]rune{
+		[]rune("rnbqkbnr"),
+		[]rune("pppppppp"),
+		[]rune("        "),
+		[]rune("        "),
+		[]rune("        "),
+		[]rune("        "),
+		[]rune("PPPPPPPP"),
+		[]rune("RNBQKBNR"),
 	}}
 	m.count = make([][]int, len(m.board))
 	for i, row := range m.board {
@@ -168,7 +172,12 @@ func (m *Main) Print() {
 			if (i+j)%2 == 0 {
 				fmt.Print(ColorReverse)
 			}
-			fmt.Printf("%2d", m.count[i][j])
+			v := m.count[i][j]
+			if v != 0 {
+				fmt.Printf("%2d", v)
+			} else {
+				fmt.Printf("  ")
+			}
 			fmt.Print(ColorReset)
 		}
 		fmt.Println()
@@ -176,7 +185,32 @@ func (m *Main) Print() {
 	fmt.Printf("overall %d\n", m.overall)
 }
 
+func (m *Main) PrintEachPiece() {
+	for i, row := range m.board {
+		for j, _ := range row {
+			m.board[i][j] = ' '
+		}
+	}
+	m.Update()
+	m.Print()
+	mi := len(m.board) / 2
+	mj := len(m.board[0]) / 2
+	for v, _ := range Pieces {
+		m.board[mi][mj] = v
+		m.Update()
+		m.Print()
+		m.board[mi][mj] = ' '
+
+		buf := bufio.NewReader(os.Stdin)
+		fmt.Print("> ")
+		if _, err := buf.ReadBytes('\n'); err != nil {
+			fmt.Println(err)
+		}
+	}
+}
+
 func main() {
 	main := New()
 	main.Print()
+	// main.PrintEachPiece()
 }
