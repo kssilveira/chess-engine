@@ -32,6 +32,12 @@ var (
 			reverse:    false,
 			directions: []Direction{{-1, -1}, {-1, +1}},
 		},
+		'p': {
+			single:     true,
+			value:      1,
+			reverse:    true,
+			directions: []Direction{{-1, -1}, {-1, +1}},
+		},
 	}
 )
 
@@ -67,10 +73,14 @@ func (m *Main) Update() {
 			if !ok {
 				continue
 			}
+			reverse := 1
+			if piece.reverse {
+				reverse = -1
+			}
 			for _, direction := range piece.directions {
 				for delta := 1; ; delta++ {
-					ni := i + direction.i*delta
-					nj := j + direction.j*delta
+					ni := i + direction.i*delta*reverse
+					nj := j + direction.j*delta*reverse
 					if ni < 0 || ni >= len(m.board) || nj < 0 || nj >= len(row) {
 						break
 					}
