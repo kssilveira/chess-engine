@@ -28,13 +28,11 @@ var (
 	Pieces = map[rune]Piece{
 		'P': {
 			single:     true,
-			value:      1,
 			reverse:    false,
 			directions: []Direction{{-1, -1}, {-1, +1}},
 		},
 		'p': {
 			single:     true,
-			value:      1,
 			reverse:    true,
 			directions: []Direction{{-1, -1}, {-1, +1}},
 		},
@@ -84,7 +82,7 @@ func (m *Main) Update() {
 					if ni < 0 || ni >= len(m.board) || nj < 0 || nj >= len(row) {
 						break
 					}
-					m.count[ni][nj] += piece.value * reverse
+					m.count[ni][nj] += reverse
 					if piece.single {
 						break
 					}
