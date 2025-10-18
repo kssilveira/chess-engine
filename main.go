@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 )
 
 const (
@@ -14,6 +15,8 @@ const (
 
 type Main struct {
 	board    [][]rune
+	nrows    int
+	ncols    int
 	count    [][]int
 	overall  int
 	useColor bool
@@ -107,9 +110,11 @@ func New(useColor bool) *Main {
 		[]rune("PPPPPPPP"),
 		[]rune("RNBQKBNR"),
 	}}
-	m.count = make([][]int, len(m.board))
-	for i, row := range m.board {
-		m.count[i] = make([]int, len(row))
+	m.nrows = len(m.board)
+	m.ncols = len(m.board[0])
+	m.count = make([][]int, m.nrows)
+	for i, _ := range m.board {
+		m.count[i] = make([]int, m.ncols)
 	}
 	m.Update()
 	return m
@@ -136,7 +141,7 @@ func (m *Main) Update() {
 				for delta := 1; ; delta++ {
 					ni := i + direction.i*delta*reverse
 					nj := j + direction.j*delta*reverse
-					if ni < 0 || ni >= len(m.board) || nj < 0 || nj >= len(row) {
+					if ni < 0 || ni >= m.nrows || nj < 0 || nj >= m.ncols {
 						break
 					}
 					m.count[ni][nj] += reverse
@@ -162,11 +167,15 @@ func (m *Main) Update() {
 
 func (m *Main) Print() {
 	for i, row := range m.board {
+		for range row {
+			fmt.Printf("   |")
+		}
+		fmt.Println()
 		for j, v := range row {
 			if m.useColor && (i+j)%2 == 0 {
 				fmt.Print(ColorReverse)
 			}
-			fmt.Printf("%c ", v)
+			fmt.Printf(" %c |", v)
 			if m.useColor {
 				fmt.Print(ColorReset)
 			}
@@ -178,13 +187,17 @@ func (m *Main) Print() {
 			}
 			v := m.count[i][j]
 			if v != 0 {
-				fmt.Printf("%2d", v)
+				fmt.Printf("%3d|", v)
 			} else {
-				fmt.Printf("  ")
+				fmt.Printf("   |")
 			}
 			if m.useColor {
 				fmt.Print(ColorReset)
 			}
+		}
+		fmt.Println()
+		for range row {
+			fmt.Printf("----")
 		}
 		fmt.Println()
 	}
@@ -199,8 +212,8 @@ func (m *Main) PrintEachPiece(waitForUserInput bool) {
 	}
 	m.Update()
 	m.Print()
-	mi := len(m.board) / 2
-	mj := len(m.board[0]) / 2
+	mi := m.nrows / 2
+	mj := m.ncols / 2
 	for v, _ := range Pieces {
 		m.board[mi][mj] = v
 		m.Update()
@@ -217,6 +230,16 @@ func (m *Main) PrintEachPiece(waitForUserInput bool) {
 	}
 }
 
+func (m *Main) Move(fi, fj, ti, tj int) {
+	m.board[ti][tj] = m.board[fi][fj]
+	m.board[fi][fj] = ' '
+	m.Update()
+}
+
+func (m *Main) GetMove(move string) (int, int) {
+	return m.nrows - 1 - int(move[1]-'1'), int(move[0] - 'a')
+}
+
 func main() {
 	useColor := flag.Bool("use_color", true, "use color")
 	doPrintEachPiece := flag.Bool("print_each_piece", false, "print each piece")
@@ -226,5 +249,21 @@ func main() {
 	main.Print()
 	if *doPrintEachPiece {
 		main.PrintEachPiece(*useColor)
+	}
+	buf := bufio.NewReader(os.Stdin)
+	for {
+		fmt.Print("> ")
+		move, err := buf.ReadString('\n')
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Printf("%s", move)
+		move = strings.TrimSpace(move)
+		parts := strings.Split(move, " ")
+		fi, fj := main.GetMove(parts[0])
+		ti, tj := main.GetMove(parts[1])
+		main.Move(fi, fj, ti, tj)
+		main.Print()
 	}
 }
