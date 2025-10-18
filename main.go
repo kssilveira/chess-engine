@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"os"
 )
@@ -12,9 +13,10 @@ const (
 )
 
 type Main struct {
-	board   [][]rune
-	count   [][]int
-	overall int
+	board    [][]rune
+	count    [][]int
+	overall  int
+	useColor bool
 }
 
 type Piece struct {
@@ -94,8 +96,8 @@ var (
 	}
 )
 
-func New() *Main {
-	m := &Main{board: [][]rune{
+func New(useColor bool) *Main {
+	m := &Main{useColor: useColor, board: [][]rune{
 		[]rune("rnbqkbnr"),
 		[]rune("pppppppp"),
 		[]rune("        "),
@@ -161,15 +163,17 @@ func (m *Main) Update() {
 func (m *Main) Print() {
 	for i, row := range m.board {
 		for j, v := range row {
-			if (i+j)%2 == 0 {
+			if m.useColor && (i+j)%2 == 0 {
 				fmt.Print(ColorReverse)
 			}
 			fmt.Printf("%c ", v)
-			fmt.Print(ColorReset)
+			if m.useColor {
+				fmt.Print(ColorReset)
+			}
 		}
 		fmt.Println()
 		for j, _ := range row {
-			if (i+j)%2 == 0 {
+			if m.useColor && (i+j)%2 == 0 {
 				fmt.Print(ColorReverse)
 			}
 			v := m.count[i][j]
@@ -178,14 +182,16 @@ func (m *Main) Print() {
 			} else {
 				fmt.Printf("  ")
 			}
-			fmt.Print(ColorReset)
+			if m.useColor {
+				fmt.Print(ColorReset)
+			}
 		}
 		fmt.Println()
 	}
 	fmt.Printf("overall %d\n", m.overall)
 }
 
-func (m *Main) PrintEachPiece() {
+func (m *Main) PrintEachPiece(waitForUserInput bool) {
 	for i, row := range m.board {
 		for j, _ := range row {
 			m.board[i][j] = ' '
@@ -201,16 +207,24 @@ func (m *Main) PrintEachPiece() {
 		m.Print()
 		m.board[mi][mj] = ' '
 
-		buf := bufio.NewReader(os.Stdin)
-		fmt.Print("> ")
-		if _, err := buf.ReadBytes('\n'); err != nil {
-			fmt.Println(err)
+		if waitForUserInput {
+			buf := bufio.NewReader(os.Stdin)
+			fmt.Print("> ")
+			if _, err := buf.ReadBytes('\n'); err != nil {
+				fmt.Println(err)
+			}
 		}
 	}
 }
 
 func main() {
-	main := New()
+	useColor := flag.Bool("use_color", true, "use color")
+	doPrintEachPiece := flag.Bool("print_each_piece", false, "print each piece")
+	flag.Parse()
+
+	main := New(*useColor)
 	main.Print()
-	// main.PrintEachPiece()
+	if *doPrintEachPiece {
+		main.PrintEachPiece(*useColor)
+	}
 }
