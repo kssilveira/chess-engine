@@ -3,21 +3,25 @@ package main
 import "fmt"
 
 type Main struct {
-	board [8][8]byte
-	lines int
-	cols int
+	board []string
 }
 
 func New() *Main{
-	return &Main{lines: 8, cols: 8}
+	return &Main{board: []string{
+		"        ",
+		"        ",
+		"        ",
+		"        ",
+		"        ",
+		"        ",
+		"        ",
+		"        ",
+	}}
 }
 
 func (m *Main) Print() {
-	for i := 0; i < m.lines; i++ {
-		for j := 0; j < m.cols; j++ {
-			fmt.Printf("%c", m.board[i][j])
-		}
-		fmt.Println()
+	for _, row := range m.board {
+		fmt.Printf("%s\n", row)
 	}
 	fmt.Println()
 }
