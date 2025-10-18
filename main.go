@@ -167,18 +167,26 @@ func (m *Main) Update() {
 
 func (m *Main) Print() {
 	for i, row := range m.board {
-		for range row {
-			fmt.Printf("   |")
+		for j := range row {
+			if m.useColor && (i+j)%2 == 0 {
+				fmt.Print(ColorReverse)
+			}
+			fmt.Print("   ")
+			if m.useColor {
+				fmt.Print(ColorReset)
+			}
+			fmt.Print("|")
 		}
 		fmt.Println()
 		for j, v := range row {
 			if m.useColor && (i+j)%2 == 0 {
 				fmt.Print(ColorReverse)
 			}
-			fmt.Printf(" %c |", v)
+			fmt.Printf(" %c ", v)
 			if m.useColor {
 				fmt.Print(ColorReset)
 			}
+			fmt.Print("|")
 		}
 		fmt.Println()
 		for j, _ := range row {
@@ -187,13 +195,14 @@ func (m *Main) Print() {
 			}
 			v := m.count[i][j]
 			if v != 0 {
-				fmt.Printf("%3d|", v)
+				fmt.Printf("%3d", v)
 			} else {
-				fmt.Printf("   |")
+				fmt.Print("   ")
 			}
 			if m.useColor {
 				fmt.Print(ColorReset)
 			}
+			fmt.Print("|")
 		}
 		fmt.Println()
 		for range row {
