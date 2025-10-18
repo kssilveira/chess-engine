@@ -196,7 +196,7 @@ func (m *Main) Print() {
 			}
 			v := m.count[i][j]
 			if v != 0 {
-				fmt.Printf("%3d", v)
+				fmt.Printf("%+3d", v)
 			} else {
 				fmt.Print("   ")
 			}
@@ -211,7 +211,7 @@ func (m *Main) Print() {
 		}
 		fmt.Println()
 	}
-	fmt.Printf("overall %d\n", m.overall)
+	fmt.Printf("overall %+d\n", m.overall)
 }
 
 func (m *Main) PrintEachPiece(waitForUserInput bool) {
