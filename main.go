@@ -47,6 +47,46 @@ var (
 			reverse:    true,
 			directions: []Direction{{-1, 0}, {1, 0}, {0, -1}, {0, 1}},
 		},
+		'B': {
+			single:     false,
+			reverse:    false,
+			directions: []Direction{{-1, -1}, {-1, 1}, {1, 1}, {1, -1}},
+		},
+		'b': {
+			single:     false,
+			reverse:    true,
+			directions: []Direction{{-1, -1}, {-1, 1}, {1, 1}, {1, -1}},
+		},
+		'N': {
+			single:     true,
+			reverse:    false,
+			directions: []Direction{{-2, -1}, {-1, -2}, {1, -2}, {2, -1}, {2, 1}, {1, 2}, {-1, 2}, {-2, 1}},
+		},
+		'n': {
+			single:     true,
+			reverse:    true,
+			directions: []Direction{{-2, -1}, {-1, -2}, {1, -2}, {2, -1}, {2, 1}, {1, 2}, {-1, 2}, {-2, 1}},
+		},
+		'Q': {
+			single:     false,
+			reverse:    false,
+			directions: []Direction{{-1, -1}, {-1, 1}, {1, 1}, {1, -1}, {-1, 0}, {1, 0}, {0, -1}, {0, 1}},
+		},
+		'q': {
+			single:     false,
+			reverse:    true,
+			directions: []Direction{{-1, -1}, {-1, 1}, {1, 1}, {1, -1}, {-1, 0}, {1, 0}, {0, -1}, {0, 1}},
+		},
+		'K': {
+			single:     true,
+			reverse:    false,
+			directions: []Direction{{-1, -1}, {-1, 1}, {1, 1}, {1, -1}, {-1, 0}, {1, 0}, {0, -1}, {0, 1}},
+		},
+		'k': {
+			single:     true,
+			reverse:    true,
+			directions: []Direction{{-1, -1}, {-1, 1}, {1, 1}, {1, -1}, {-1, 0}, {1, 0}, {0, -1}, {0, 1}},
+		},
 	}
 )
 
