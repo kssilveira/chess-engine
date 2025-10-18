@@ -269,6 +269,9 @@ func main() {
 		}
 		fmt.Printf("%s", move)
 		move = strings.TrimSpace(move)
+		if len(move) == 0 {
+			return
+		}
 		parts := strings.Split(move, " ")
 		fi, fj := main.GetMove(parts[0])
 		ti, tj := main.GetMove(parts[1])
