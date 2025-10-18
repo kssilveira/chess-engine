@@ -8,8 +8,9 @@ const (
 )
 
 type Main struct {
-	board []string
-	count [][]int
+	board   []string
+	count   [][]int
+	overall int
 }
 
 type Piece struct {
@@ -29,12 +30,22 @@ var (
 		'P': {
 			single:     true,
 			reverse:    false,
-			directions: []Direction{{-1, -1}, {-1, +1}},
+			directions: []Direction{{-1, -1}, {-1, 1}},
 		},
 		'p': {
 			single:     true,
 			reverse:    true,
-			directions: []Direction{{-1, -1}, {-1, +1}},
+			directions: []Direction{{-1, -1}, {-1, 1}},
+		},
+		'R': {
+			single:     false,
+			reverse:    false,
+			directions: []Direction{{-1, 0}, {1, 0}, {0, -1}, {0, 1}},
+		},
+		'r': {
+			single:     false,
+			reverse:    true,
+			directions: []Direction{{-1, 0}, {1, 0}, {0, -1}, {0, 1}},
 		},
 	}
 )
@@ -83,10 +94,21 @@ func (m *Main) Update() {
 						break
 					}
 					m.count[ni][nj] += reverse
-					if piece.single {
+					if piece.single || m.board[ni][nj] != ' ' {
 						break
 					}
 				}
+			}
+		}
+	}
+
+	m.overall = 0
+	for _, row := range m.count {
+		for _, v := range row {
+			if v > 0 {
+				m.overall += 1
+			} else if v < 0 {
+				m.overall -= 1
 			}
 		}
 	}
@@ -111,6 +133,7 @@ func (m *Main) Print() {
 		}
 		fmt.Println()
 	}
+	fmt.Printf("overall %d\n", m.overall)
 }
 
 func main() {
