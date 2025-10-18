@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -223,7 +224,13 @@ func (m *Main) PrintEachPiece(waitForUserInput bool) {
 	m.Print()
 	mi := m.nrows / 2
 	mj := m.ncols / 2
+	var names []string
 	for v, _ := range Pieces {
+		names = append(names, string(v))
+	}
+	sort.Strings(names)
+	for _, name := range names {
+		v := rune(name[0])
 		m.board[mi][mj] = v
 		m.Update()
 		m.Print()
